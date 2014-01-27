@@ -14,6 +14,8 @@
 /* Converts an array of characters (card_name) into a corresponding 
    numeric value based on the value of the card.  Input limited to 
    two characters.
+
+   Ex: 'K' => 10, '2' => 2
 */
 int parse_card(const char card_name[3]) {
     int val = 0;
