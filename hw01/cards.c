@@ -17,7 +17,7 @@
 */
 int parse_card(const char card_name[3]) {
     int val = 0;
-    switch(card[0]) {
+    switch(card_name[0]) {
         case 'K':
         case 'Q':
         case 'J':
