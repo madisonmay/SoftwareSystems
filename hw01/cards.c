@@ -57,11 +57,12 @@ int count_delta(int val) {
 void count_cards() {
     char card_name[3];
     int count = 0;
+    int val;
     while (card_name[0] != 'X') {
         puts("Enter the card name: ");
         scanf("%2s", card_name);
 
-        int val = parse_card(card_name);
+        val = parse_card(card_name);
         if (!val) {
             puts("Card not recognized.");
             continue;
