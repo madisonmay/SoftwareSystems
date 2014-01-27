@@ -49,6 +49,8 @@ int count_delta(int val) {
 /* A card counter function that wraps parse_card and count_delta.
    Handles initialization, then queries the user for input cards
    and delegates to parse_card and count_delta for the "heavy lifting"
+
+   count_cards is responsible for handling all text output/input
 */
 void count_cards() {
     char card_name[3];
