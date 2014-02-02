@@ -8,8 +8,8 @@ If you use apt:
 sudo apt-get install python-pandas python-numpy python-matplotlib
 """
 
-import numpy
-import pandas
+import numpy as np
+import pandas as pd
 import random
 import matplotlib.pyplot as pyplot
 
@@ -45,14 +45,16 @@ class Buffer:
         return self.queued
 
 class Controller:
-    def __init__( self, kp, ki ):
+    def __init__( self, kp, ki, kd ):
         """Initializes the controller.
 
         kp: proportional gain
         ki: integral gain
+        kd: derivative gain
         """
-        self.kp, self.ki = kp, ki
+        self.kp, self.ki, self.kd = kp, ki, kd
         self.i = 0       # Cumulative error ("integral")
+        self.past_error = 0
 
     def work( self, e ):
         """Computes the number of jobs to be added to the ready queue.
@@ -62,8 +64,10 @@ class Controller:
         returns: float number of jobs
         """
         self.i += e
+        self.delta = e - self.past_error
+        self.past_error = e
 
-        return self.kp*e + self.ki*self.i
+        return self.kp*e + self.ki*self.i + self.kd*self.delta
 
 # ============================================================
 
@@ -77,9 +81,7 @@ def closed_loop( c, p, tm=5000 ):
     returns: tuple of sequences (times, targets, errors)
     """
     def setpoint( t ):
-        if t < 100: return 0
-        if t < 300: return 50
-        return 10
+        return t*.02
     
     y = 0
     res = []
@@ -96,23 +98,40 @@ def closed_loop( c, p, tm=5000 ):
 
 # ============================================================
 
-c = Controller( 1.25, 0.01 )
-p = Buffer( 50, 10 )
 
-# run the simulation
-ts, rs, es, us, ys = closed_loop( c, p, 1000 )
+# best performance at kd ~= 1.1
+kds = np.linspace(0, 3, 31)
+average_errors = []
+for kd in kds:
+    errors = []
+    for i in range(1000):
+        c = Controller( 1.25, 0.01, kd)
+        p = Buffer( 50, 10 )
 
-print 'RMS error', numpy.sqrt(numpy.mean(numpy.array(es)**2))
+        # run the simulation
+        ts, rs, es, us, ys = closed_loop( c, p, 1000 )
 
-# generate the smoothed curve using a rolling mean
-# (I think the curves in the book use loess)
-ys_smooth = pandas.rolling_mean(numpy.array(ys), 20)
+        rms_error = np.sqrt(np.mean(np.array(es)**2))
+        errors.append(rms_error)
 
-# make the plot
-pyplot.plot(ts, rs, color='green', label='target')
-pyplot.plot(ts, ys, color='red', label='queue length')
-pyplot.plot(ts, ys_smooth, color='blue', label='trend')
+        # # generate the smoothed curve using a rolling mean
+        # # (I think the curves in the book use loess)
+        # ys_smooth = pandas.rolling_mean(numpy.array(ys), 20)
+
+        # # make the plot
+        # pyplot.plot(ts, rs, color='green', label='target')
+        # pyplot.plot(ts, ys, color='red', label='queue length')
+        # pyplot.plot(ts, ys_smooth, color='blue', label='trend')
+        # pyplot.show()
+
+    average_error = sum(errors)/len(errors)
+    average_errors.append(average_error)
+
+print kds, average_errors
+pyplot.bar(kds, average_errors, width=kds[1]-kds[0])
+pyplot.ylim(ymin=5)
 pyplot.show()
+
 
 
 
