@@ -128,7 +128,7 @@ for kd in kds:
     average_errors.append(average_error)
 
 print kds, average_errors
-pyplot.bar(kds, average_errors, width=kds[1]-kds[0])
+pyplot.plot(kds, average_errors)
 pyplot.ylim(ymin=5)
 pyplot.show()
 
