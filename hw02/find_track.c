@@ -46,7 +46,7 @@ void find_track_regex(char pattern[])
     char msg[100];
 
     // compilation
-    err = regcomp(&re, pattern, 0);
+    err = regcomp(&re, pattern, REG_EXTENDED);
     if (err) {
         fprintf(stderr, "Regex compilation failed with error code: %i\n", err);
         exit(1);
