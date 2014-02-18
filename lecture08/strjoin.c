@@ -37,8 +37,7 @@ char *strjoin(char *array[], int n)
 
     /* copy strings into the proper blocks of memory */
     for (j=0; j<n; j++) {
-        int index = cumulative[j];
-        strcpy(&joined[index], array[j]);
+        strcpy(&joined[cumulative[j]], array[j]);
     } 
 
     return joined;
