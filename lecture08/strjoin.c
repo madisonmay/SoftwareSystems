@@ -18,8 +18,7 @@ char *tracks[] = {
 };
 
 /* Returns a heap-allocated string that contains the strings 
-   from the given array, joined up with no spaces between.
-*/
+   from the given array, joined up with no spaces between. */
 char *strjoin(char *array[], int n)
 {
     int i, j;
@@ -35,7 +34,7 @@ char *strjoin(char *array[], int n)
     } 
 
     /* init empty string of proper size */
-    char *joined = malloc(sizeof(char)*(cumulative[n]));
+    char *joined = (char *) malloc(sizeof(char)*(cumulative[n]));
 
     /* copy strings into the proper blocks of memory */
     for (j=0; j<n; j++) {
