@@ -23,7 +23,6 @@ char *tracks[] = {
 char *strjoin(char *array[], int n)
 {
     int i, j;
-    int length = 0;
     int lengths[n];
     int cumulative[n+1];
     cumulative[0] = 0;
@@ -32,8 +31,7 @@ char *strjoin(char *array[], int n)
        and store list of cumulative sizes for strncpy */
     for (i=0; i<n; i++) {
         lengths[i] = strlen(array[i]);
-        length += lengths[i];
-        cumulative[i+1] = length;
+        cumulative[i+1] = cumulative[i] + lengths[i];
     } 
 
     /* init empty string of proper size */
