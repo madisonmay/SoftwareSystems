@@ -22,19 +22,21 @@ char *tracks[] = {
 */
 char *strjoin(char *array[], int n)
 {
-    int length;
-    int i;
-    int j;
+    int i, j, length;
 
+    /* calculate size of dynamically allocated string*/
     for (i=0; i<n; i++) {
         length += strlen(array[i]);
     } 
 
+    /* init empty string of proper size*/
     char *joined = malloc(sizeof(char)*(length+1));
 
+    /* concat strings */
     for (j=0; j<n; j++) {
         strcat(joined, array[j]);
     } 
+
     return joined;
 }
 
