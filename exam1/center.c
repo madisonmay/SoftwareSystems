@@ -47,7 +47,7 @@ char *center(char *s, int n, char fillchar)
 
     // ensure null termination
     centered[n] = '\0';
-    
+
     return centered;
 }
 
