@@ -18,8 +18,32 @@ License: Creative Commons Attribution-ShareAlike 3.0
 
 char *center(char *s, int n, char fillchar)
 {
-    // FILL THIS IN
-    //    return NULL;
+    // calculate string length and offset
+    int length =  strlen(s);
+    int start = n/2 - length/2;
+
+    // allocate space for string
+    char *centered = malloc(sizeof(char)*(n+1));
+    int i = 0;
+
+    // fill first half with padding
+    while (i < start) {
+        centered[i] = fillchar;
+        i++;
+    }
+
+    // copy string to proper location
+    strcpy(&centered[i], s);
+    i += length;
+
+    // fill second half with padding
+    while (i < n) {
+        centered[i] = fillchar;
+        i++;
+    }
+
+    centered[n] = '\0';
+    return centered;
 }
 
 
