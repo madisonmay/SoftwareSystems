@@ -19,30 +19,35 @@ License: Creative Commons Attribution-ShareAlike 3.0
 char *center(char *s, int n, char fillchar)
 {
     // calculate string length and offset
-    int length =  strlen(s);
-    int start = n/2 - length/2;
+    // the modulus operator is used to account for the 
+    // behavior of int division and match the given example
+    int length = strlen(s);
+    int start  = (n / 2 - length / 2) - length % 2;
 
     // allocate space for string
-    char *centered = malloc(sizeof(char)*(n+1));
+    char *centered = malloc(sizeof(char) * (n + 1));
     int i = 0;
 
-    // fill first half with padding
+    // pad left hand side
     while (i < start) {
         centered[i] = fillchar;
         i++;
     }
 
     // copy string to proper location
+    // prepare to add right padding
     strcpy(&centered[i], s);
     i += length;
 
-    // fill second half with padding
+    // pad right hand side
     while (i < n) {
         centered[i] = fillchar;
         i++;
     }
 
+    // ensure null termination
     centered[n] = '\0';
+    
     return centered;
 }
 
