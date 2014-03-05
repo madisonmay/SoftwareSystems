@@ -18,3 +18,8 @@ tutorial: tutorial.c
 
 test_rand: test_rand.c rand.c
 	gcc -O3 test_rand.c -o test_rand
+
+test1: test1.c rand.c
+	gcc -O3 test1.c -o test1
+
+

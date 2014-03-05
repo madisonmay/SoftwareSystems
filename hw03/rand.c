@@ -23,7 +23,6 @@
 float my_random_float()
 {
   int x, exp, mant;
-  float f;
 
   // this union is for assembling the float.
   union {
@@ -92,7 +91,7 @@ double my_random_double()
 {
   uint64_t x;
   uint64_t mant;
-  uint64_t exp = 1023;
+  uint64_t exp = 1022;
   uint64_t mask = 1;
 
   union {
@@ -103,7 +102,7 @@ double my_random_double()
   // generate random bits until we see the first set bit
   while (1) {
     x = random();
-    x << 32;
+    x = x << 32;
     x += random();
     if (x == 0) {
       exp -= 63;
@@ -120,7 +119,7 @@ double my_random_double()
 
   // use the remaining bit as the mantissa
   mant = x >> 11;
-  b.l = (exp << 53) | mant;
+  b.l = (exp << 52) | mant;
 
   return b.d;
 }
