@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "mongo.h"
 
 static void tutorial_insert_batch( mongo *conn ) {
   bson *p;
