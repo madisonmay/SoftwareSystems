@@ -161,12 +161,12 @@ float random_float()
 float random_double()
 {
   int x;
-  double f;
+  double d;
 
   x = random();
-  f = (double) x / (double)RAND_MAX;
+  d = (double) x / (double)RAND_MAX;
 
-  return f;
+  return d;
 }
 
 

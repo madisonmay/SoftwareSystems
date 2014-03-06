@@ -44,8 +44,8 @@ main (int argc, char *argv[])
 {
   int i;
   float f;
-  double t0, t1;
-  int iters = 10000000;
+  double t0, t1, d;
+  int iters = 1000000000;
   int seed = 17;
 
   srandom (seed);
@@ -109,22 +109,21 @@ main (int argc, char *argv[])
   }
   t1 = get_seconds();
   printf ("theirs \t %f ms\n", t1 - t0);
-    
+
 
   srandom (seed);
   t0 = get_seconds();
   for (i=0; i<iters; i++) {
-    f = random_float();
+    d = my_random_double();
   }
   t1 = get_seconds();
-  printf ("theirs \t %f ms\n", t1 - t0);    
+  printf ("mine double \t %f ms\n", t1 - t0);   
 
   srandom (seed);
-  double d;
   t0 = get_seconds();
   for (i=0; i<iters; i++) {
     d = random_double();
   }
   t1 = get_seconds();
-  printf ("doubles \t %f ms\n", t1 - t0);    
+  printf ("their double \t %f ms\n", t1 - t0);    
 }
