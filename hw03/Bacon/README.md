@@ -68,6 +68,10 @@ ACIDity
 -------
 Redis sacrifices a bit of data integrity in return for blazing speed, although there are configuration options that can adjust this trade-off to produce a more stable data store.  If data consistency is critical, redis can even add redundancy to the data store using a master-slave replication mechanism. Atomicity, consistency, and isolation are guaranteed by default, and durability is guaranteed with the proper append-only file (AOF) settings.
 
+C Interface
+-----------
+Although the C interface was a bit more barebones than the python interface, it was fairly intuitive since it allowed access to the redis database by passing in gistandard redis command strings.  It was nice to have access to a hash set implementation via Redis, as C's stdlib doesn't support this data structure by default.  
+
 
 
 
