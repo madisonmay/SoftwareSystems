@@ -16,6 +16,12 @@
 int ledPin = 5;       // select the pin for the LED
 int buttonPin1 = 2;
 int buttonPin2 = 3;
+int prevButton1 = 1;
+int prevButton2 = 1;
+
+int notes[7] = {220, 246, 261, 293, 329, 349, 391};
+int note_iter = 2;
+float conversion = 0.46;
 
 void setup() {
   Serial.begin(9600);
@@ -34,21 +40,22 @@ void setup() {
   pinMode(7, OUTPUT);  
   pinMode(6, OUTPUT);  
   
-  // timer 1 @ 1Hz
+  // timer1
   TCCR1A = 0;// set entire TCCR1A register to 0
   TCCR1B = 0;// same for TCCR1B
   TCNT1  = 0;//initialize counter value to 0
   // set compare match register for 1hz increments
-  OCR1A = 15624;// = (16*10^6) / (261*1024) - 1 (must be <65536)
+  OCR1A = 240;
   // turn on CTC mode
   TCCR1B |= (1 << WGM12);
-  // Set CS12 and CS10 bits for 1024 prescaler
-  TCCR1B |= (1 << CS12) | (1 << CS10);  
+  // Set CS12 and CS10 bits for 64 prescaler
+  TCCR1B |= (1 << CS11) | (1 << CS10);  
   // enable timer compare interrupt
   TIMSK1 |= (1 << OCIE1A);
   
   sei();
 }
+
 
 void writeByte(int x) {
   int pin;
@@ -65,8 +72,6 @@ int stride = 5;
 int counter = low;
 
 ISR(TIMER1_COMPA_vect){  //change the 0 to 1 for timer1 and 2 for timer2
-  int button1 = digitalRead(buttonPin1);
-  if (button1) return;
   counter += stride;
   if (counter > high) {
     counter = low;
@@ -77,5 +82,8 @@ ISR(TIMER1_COMPA_vect){  //change the 0 to 1 for timer1 and 2 for timer2
 }
 
 void loop() {
-
+  int button1 = digitalRead(buttonPin1);
+  int button2 = digitalRead(buttonPin2);
+  int i = note_iter - button1 + button2; 
+  OCR1A = (int) (conversion * notes[i]);
 }
