@@ -20,7 +20,7 @@ int prevButton1 = 1;
 int prevButton2 = 1;
 
 int notes[7] = {220, 246, 261, 293, 329, 349, 391};
-int note_iter = 2;
+int note = 2;
 float conversion = 0.46;
 
 void setup() {
@@ -54,6 +54,9 @@ void setup() {
   TIMSK1 |= (1 << OCIE1A);
   
   sei();
+  
+  attachInterrupt(0, increment, RISING);  // Interrupt attached to the button connected to pin 2
+  attachInterrupt(1, decrement, RISING); 
 }
 
 
@@ -81,9 +84,15 @@ ISR(TIMER1_COMPA_vect){
   writeByte(counter);
 }
 
+void increment() {
+  note++;
+  OCR1A = (int) (conversion * notes[note%7]);
+}
+
+void decrement() {
+  note--;
+  OCR1A = (int) (conversion * notes[note%7]);
+}
+
 void loop() {
-  int button1 = digitalRead(buttonPin1);
-  int button2 = digitalRead(buttonPin2);
-  int i = note_iter - button1 + button2 + 1; 
-  OCR1A = (int) (conversion * notes[i]);
 }
