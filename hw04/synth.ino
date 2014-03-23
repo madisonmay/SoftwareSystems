@@ -71,7 +71,7 @@ int high = 255;
 int stride = 5;
 int counter = low;
 
-ISR(TIMER1_COMPA_vect){  //change the 0 to 1 for timer1 and 2 for timer2
+ISR(TIMER1_COMPA_vect){
   counter += stride;
   if (counter > high) {
     counter = low;
@@ -84,6 +84,6 @@ ISR(TIMER1_COMPA_vect){  //change the 0 to 1 for timer1 and 2 for timer2
 void loop() {
   int button1 = digitalRead(buttonPin1);
   int button2 = digitalRead(buttonPin2);
-  int i = note_iter - button1 + button2; 
+  int i = note_iter - button1 + button2 + 1; 
   OCR1A = (int) (conversion * notes[i]);
 }
