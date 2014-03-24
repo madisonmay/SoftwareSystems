@@ -245,6 +245,8 @@ Value *list_lookup(Node *list, Hashable *key)
 
 typedef struct map {
     int n;
+    int i;
+    int threshold;
     Node **lists;
 } Map;
 
@@ -258,6 +260,8 @@ Map *make_map(int n)
         exit(1);
     }
     m->n = n;
+    m->i = 0;
+    m->threshold = n / 2; // adjustable value to determine when to resize
     m->lists = malloc(sizeof(Node*)*n);
     return m;
 }
@@ -277,21 +281,50 @@ void print_map(Map *map)
 }
 
 
-/* Adds a key-value pair to a map. */
-void map_add(Map *map, Hashable *key, Value *value)
+void map_add_node(Map *map, Node *data)
 {
-    int bucket = hash_hashable(key)%(map->n);
-    printf("%i\n", bucket);
+    int bucket = hash_hashable(data->key)%(map->n);
     Node *node = map->lists[bucket];
     Node *prev = NULL;
+    map->i++;
+    if (map->i > map->threshold) {
+        // rezise hash map
+        int i;
+
+        map->threshold = map->n;
+        map->n*=2;
+
+        Node **lists = malloc(sizeof(Node*)*map->n);
+        Node **tmp = map->lists;
+        map->lists = lists;
+        map->i = 0;
+
+        for (i=0; i<map->threshold; i++) {
+            if (tmp[i] != NULL) {
+                map_add_node(map, tmp[i]);
+            }
+        }
+
+        map_add_node(map, data);
+        return;
+    }
     if (node == NULL) {
-        map->lists[bucket] = make_node(key, value, prev);
+        map->lists[bucket] = data;
+        data->next = prev;
+        return;
     } 
-    while ((node != NULL) && (!equal_hashable(map->lists[bucket]->key, key))) {
+    while ((node != NULL) && (!equal_hashable(map->lists[bucket]->key, data->key))) {
         prev = node;
         node = node->next;
     }
-    make_node(key, value, prev);
+    data->next = prev;
+}
+
+/* Adds a key-value pair to a map. */
+void map_add(Map *map, Hashable *key, Value *value)
+{
+    Node *node = make_node(key, value, NULL);
+    map_add_node(map, node);
 }
 
 
@@ -338,9 +371,10 @@ int main ()
     print_lookup(value);
 
     // make a map
-    Map *map = make_map(10);
+    Map *map = make_map(4);
     map_add(map, hashable1, value1);
     map_add(map, hashable2, value2);
+    map_add(map, hashable3, value2);
 
     printf ("Map\n");
     print_map(map);
