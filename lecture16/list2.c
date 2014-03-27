@@ -71,12 +71,12 @@ int remove_by_value(Node **head, int val) {
     }
 
     for(; node->next != NULL; node = node->next) {
-	if (node->next->val == val) {
-	    victim = node->next;
-	    node->next = victim->next;
-	    free(victim);
-	    return 1;
-	}
+    	if (node->next->val == val) {
+    	    victim = node->next;
+    	    node->next = victim->next;
+    	    free(victim);
+    	    return 1;
+    	}
     }
     return 0;
 }
@@ -107,7 +107,31 @@ void reverse(Node **head) {
 // element between the first and second elements.
 // Returns 0 if successful, -1 if the index is out of range.
 int insert_by_index(Node **head, int val, int index) {
-    // FILL THIS IN
+    Node *node = *head;
+    Node *prev;
+
+    prev = NULL;
+
+    if (node == NULL && index == 0) {
+        node = make_node(val, NULL);
+        *head = node;
+        return 0;
+    }
+
+    for(; node != NULL; node = node->next) {
+        if (index <= 0) {
+            Node *inserted = make_node(val, node);
+            if (prev != NULL) {
+                prev->next = inserted;
+            } else {
+                *head = inserted;
+            }
+            return 0;
+        }
+        prev = node;
+        index--;
+    }
+
     return -1;
 }
 
@@ -135,13 +159,13 @@ int main() {
     insert_by_index(&test_list, 3, 2);
     insert_by_index(&test_list, 5, 4);
     insert_by_index(&test_list, 7, 6);
+    print_list(test_list);
 
     // this index is out of bounds; should return -1
     int res = insert_by_index(&test_list, 9, 8);
     assert(res == -1);
 
     printf("test_list\n");
-    print_list(test_list);
 
     // make an empty list
     printf("empty\n");
