@@ -25,9 +25,11 @@ void timer_sleep (int64_t ticks) {
 }
 
 void thread_wake (struct thread *t, void *aux){
+  // at every tick, decrement the ticks remaining until unblock
   if (t->status == THREAD_BLOCKED) {
     t->ticks--;
     if (!t->ticks) {
+      // when 0 ticks remain, unblock the thread.
       thread_unblock(t);
     }
   }
