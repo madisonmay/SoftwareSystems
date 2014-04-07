@@ -41,7 +41,7 @@ gchar *read_file(gchar *file_name) {
 
   if (!success) {
       /* Report error to user, and free error */
-      fprintf(stderr, "Unable to read file: %s\n", err->message);
+      g_fprintf(stderr, "Unable to read file: %s\n", err->message);
       g_error_free(err);
       exit(1);
   }
@@ -90,11 +90,11 @@ int main(int argc, char** argv) {
 
     // split into words
     gchar **tokens = tokenize(contents);
-    free(contents);
+    g_free(contents);
 
     // count word occurrences
     GHashTable *counter = word_counter(tokens); 
-    free(tokens);
+    g_free(tokens);
 
     print_hash(counter);
 
