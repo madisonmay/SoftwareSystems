@@ -1,4 +1,5 @@
 Pintos - Threading
+=====================
 
 In this segment of the homework, we improved upon the existing implementation of `thread_sleep` by modifying the code to block/resume the current thread instead of yielding. 
 
@@ -6,6 +7,7 @@ For emulation we used bochs 2.4, which must be compiled with the --with-nogui fl
 
 Below are the functions we modified, and a brief description of what we did:
 
+```C
 /* Sleeps for approximately TICKS timer ticks.  Interrupts must
    be turned on. */
 void timer_sleep (int64_t ticks) { 
@@ -30,19 +32,23 @@ void thread_wake (struct thread *t, void *aux){
     }
   }
 }
+```
 
 
 We added a uint64 to the thread struct to keep track of how long it needs to block for before waking up. When called on a thread, this new function decrements that counter if the thread is currently blocked.  When the number of ticks for a thread becomes 0, the thread is unblocked.
 
+```
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   thread_tick ();
   thread_foreach(thread_wake, NULL);
 }
+```
 
 We added a call to the thread_wake function on each thread every time the interrupt triggers, so that sleeping threads can be woken.
 
 Future work:
+-------------
 We did not take a crack at prioritization, but to do so we would need to add a priority field to the thread struct, and alter the scheduling procedure to switch context to threads with the highest priority first.  While running, the thread’s priority would be gradually decreased.  To implement this we would want to create a list of threads and sort it based on descending priority, then pop off of the front of that list in the next_thread_to_run function.
  
