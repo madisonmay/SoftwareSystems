@@ -61,15 +61,20 @@ GHashTable *word_counter(gchar **tokens) {
   GHashTable *hash = g_hash_table_new(g_str_hash, g_str_equal);
 
   while (*tokens != NULL) {
-    value = (int *) g_hash_table_lookup(hash, (gpointer) *tokens);
+    value = (gint *) g_hash_table_lookup(hash, (gpointer) *tokens);
     if (value == NULL) {
-      value = malloc(sizeof(int *));
+      value = g_malloc(sizeof(gint));
+      if (value == NULL) {
+        fputs("Failed to malloc space for int *\n", stderr);
+        exit(1);
+      }
       *value = 0;
     }
     *value += 1;
     g_hash_table_insert(hash, (gpointer) *tokens, (gpointer) value);
     tokens++;
   }
+  g_free(value);
   return hash;
 }
 
