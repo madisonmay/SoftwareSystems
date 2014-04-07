@@ -90,9 +90,11 @@ int main(int argc, char** argv) {
 
     // split into words
     gchar **tokens = tokenize(contents);
+    free(contents);
 
     // count word occurrences
     GHashTable *counter = word_counter(tokens); 
+    free(tokens);
 
     print_hash(counter);
 
