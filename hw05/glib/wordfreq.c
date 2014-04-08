@@ -28,6 +28,7 @@ void print_hash(GHashTable *hash) {
   g_hash_table_iter_init (&iter, hash);
   while (g_hash_table_iter_next (&iter, &hash_key, &hash_value)) {
       printf("%s: %d\n", (gchar *) hash_key, *(gint *) hash_value);
+      g_free(hash_value);
   }
 }
 
@@ -51,7 +52,8 @@ gchar *read_file(gchar *file_name) {
 gchar **tokenize(gchar *contents) {
   // split a gchar * into words, returning a gchar **
   const char* seperators = ".?!,:;-\"\'/()\n\t\r[] "; // word breaks
-  return g_strsplit_set((const char *) contents, seperators, 0);
+  gchar **tokens = g_strsplit_set(contents, seperators, 0);
+  return tokens;
 }
 
 GHashTable *word_counter(gchar **tokens) {
@@ -71,10 +73,9 @@ GHashTable *word_counter(gchar **tokens) {
       *value = 0;
     }
     *value += 1;
-    g_hash_table_insert(hash, (gpointer) *tokens, (gpointer) value);
+    g_hash_table_replace(hash, (gpointer) *tokens, (gpointer) value);
     tokens++;
   }
-  g_free(value);
   return hash;
 }
 
@@ -82,22 +83,23 @@ GHashTable *word_counter(gchar **tokens) {
 int main(int argc, char** argv) {
     gchar *file_name = (gchar *) "alice.txt";
     gchar *contents;
+    gchar *lower;
 
     contents = read_file(file_name);
 
     // lowercase string
-    contents = g_ascii_strdown(contents, -1);
+    lower = g_ascii_strdown(contents, -1);
+    free(contents);
 
     // split into words
-    gchar **tokens = tokenize(contents);
-    g_free(contents);
+    gchar **tokens = tokenize(lower);
+    free(lower);
 
     // count word occurrences
     GHashTable *counter = word_counter(tokens); 
-    g_free(tokens);
 
     print_hash(counter);
 
-    // clean up
-    g_hash_table_destroy(counter);
+    g_strfreev(tokens);
+    g_hash_table_destroy(counter); 
 }
