@@ -1,6 +1,0 @@
-# Sample Makefile
-CFLAGS := $(shell pkg-config --cflags glib-2.0 gtk+-2.0)
-LDFLAGS := $(shell pkg-config --libs glib-2.0 gtk+-2.0)
-
-parse: parse.c
-	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
