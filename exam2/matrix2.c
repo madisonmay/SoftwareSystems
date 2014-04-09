@@ -155,6 +155,45 @@ double *row_sum(Matrix *A) {
     return res;
 }
 
+// Adds up the cols of A and returns a heap-allocated array of doubles.
+double *col_sum(Matrix *A) {
+    double total;
+    int i, j;
+
+    double *res = malloc(A->cols * sizeof(double));
+
+    for (j=0; j<A->cols; j++) {
+        total = 0.0;
+        for (i=0; i<A->rows; i++) {
+            total += A->data[i][j];
+        }
+        res[j] = total;
+    }
+    return res;
+}
+
+// Adds up the major/minor diagonals of A and returns a heap-allocated array of doubles.
+double *diag_sum(Matrix *A) {
+    int i;
+
+    int size = A->rows;
+    double *res = malloc(2 * sizeof(double));
+
+    double major_sum = 0;
+    for (i=0; i<size; i++) {
+        major_sum += A->data[i][i];
+    }
+    res[0] = major_sum;
+
+    double minor_sum = 0;
+    for (i=0; i<size; i++) {
+        minor_sum += A->data[i][size-i-1];
+    }
+    res[1] = minor_sum;
+
+    return res;
+}
+
 /* 
    http://en.wikipedia.org/wiki/Magic_square
 
@@ -169,11 +208,40 @@ double *row_sum(Matrix *A) {
    Feel free to use row_sum().
 */
 
+int is_magic_square(Matrix *m) {
+    int i, j;
+    if (m->rows != m->cols) { return 0; }
+
+    double **sums = malloc(3*sizeof(double *));
+    int *lengths = malloc(3*sizeof(int));
+
+    sums[0] = row_sum(m);
+    sums[1] = col_sum(m);
+    sums[2] = diag_sum(m);
+
+    lengths[0] = m->rows;
+    lengths[1] = m->cols;
+    lengths[2] = 2;
+
+    double magic = **sums;
+
+    for (i=0; i<3; i++) {
+        for (j=0; j<lengths[i]; j++) {
+            if (sums[i][j] != magic) {
+                return 0;
+            }
+        }
+    }
+
+    return 1;
+}
+
 
 int main() {
     int i;
 
     Matrix *A = make_matrix(3, 4);
+
     consecutive_matrix(A);
     printf("A\n");
     print_matrix(A);
@@ -202,6 +270,37 @@ int main() {
 	printf("row %d\t%lf\n", i, sums[i]);
     }
     // should print 6, 22, 38
+
+    Matrix *E = make_matrix(3, 3);
+    E->data[0][0] = 4;
+    E->data[0][1] = 9;
+    E->data[0][2] = 2;
+
+    E->data[1][0] = 3;
+    E->data[1][1] = 5;
+    E->data[1][2] = 7;
+
+    E->data[2][0] = 8;
+    E->data[2][1] = 1;
+    E->data[2][2] = 6;
+
+    const char * const YN[] = { "No", "Yes" };
+
+    print_matrix(E);
+    puts("Magic Square?");
+    puts(YN[is_magic_square(E)]);
+
+    Matrix *F = make_matrix(3, 3);
+    increment_matrix(F, 1);
+    print_matrix(F);
+    puts("Magic Square?");
+    puts(YN[is_magic_square(F)]);
+
+    Matrix *G = make_matrix(3, 3);
+    consecutive_matrix(G);
+    print_matrix(G);
+    puts("Magic Square?");
+    puts(YN[is_magic_square(G)]);
 
     return 0;
 }
