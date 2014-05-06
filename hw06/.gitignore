@@ -1,0 +1,7 @@
+*.o
+*.cu_o
+*.jpg
+*.png
+main
+serialmain
+memcheck
